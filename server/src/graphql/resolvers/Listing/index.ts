@@ -1,8 +1,8 @@
 import { IResolvers } from "apollo-server-express";
-import { DataBase, Listing } from "../lib/types";
+import { DataBase, Listing } from "../../../lib/types";
 import { ObjectId } from "mongodb";
 
-export const resolvers: IResolvers = {
+export const listingResolvers: IResolvers = {
   Query: {
     listings: async (
       _root: undefined,
