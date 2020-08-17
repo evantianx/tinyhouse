@@ -1,15 +1,34 @@
 import { IResolvers } from "apollo-server-express";
-import { listings, Listing } from "../listings";
+import { DataBase, Listing } from "../lib/types";
+import { ObjectId } from "mongodb";
 
 export const resolvers: IResolvers = {
   Query: {
-    listings: (): Listing[] => listings,
+    listings: async (
+      _root: undefined,
+      _args: undefined,
+      { db }: { db: DataBase }
+    ): Promise<Listing[]> => {
+      return await db.listings.find({}).toArray();
+    },
   },
   Mutation: {
-    deleteListing: (_root: undefined, { id }: { id: string }): Listing => {
-      const idx = listings.findIndex((l) => l.id === id);
-      if (idx !== -1) return listings.splice(idx, 1)[0];
-      throw new Error("failed to delete listing");
+    deleteListing: async (
+      _root: undefined,
+      { id }: { id: string },
+      { db }: { db: DataBase }
+    ): Promise<Listing> => {
+      const deleteRes = await db.listings.findOneAndDelete({
+        _id: new ObjectId(id),
+      });
+
+      if (!deleteRes.value) {
+        throw new Error("failed to delete listing");
+      }
+      return deleteRes.value;
     },
+  },
+  Listing: {
+    id: (listing: Listing): string => listing._id.toHexString(),
   },
 };
