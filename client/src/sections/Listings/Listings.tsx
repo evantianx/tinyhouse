@@ -1,5 +1,5 @@
 import React from "react";
-import { server } from "../../lib/api";
+import { useQuery, useMutation } from "../../lib/api";
 import {
   ListingsData,
   DeleteListingData,
@@ -31,22 +31,42 @@ const DELETE_LISTING = `
 `;
 
 export const Listings = () => {
-  const fetchListings = async () => {
-    const { data } = await server.fetch<ListingsData>({ query: LISTING });
-    console.log(data.listings);
+  const { data, loading, error, refetch } = useQuery<ListingsData>(LISTING);
+
+  const [
+    deleteListings,
+    { loading: deleteLoading, error: deleteError },
+  ] = useMutation<DeleteListingData, DeleteListingVariables>(DELETE_LISTING);
+
+  const handleDeleteListing = async (id: string) => {
+    await deleteListings({ id });
+    refetch();
   };
-  const deleteListings = async () => {
-    const { data } = await server.fetch<
-      DeleteListingData,
-      DeleteListingVariables
-    >({ query: DELETE_LISTING, variables: { id: "5f3a5530487bb6584854a8fc" } });
-    console.log(data.deleteListing);
-  };
+
+  const listingsList = data?.listings?.map(({ id, title }) => {
+    return (
+      <li key={id}>
+        {title} <button onClick={() => handleDeleteListing(id)}>delete</button>
+      </li>
+    );
+  });
+
+  if (error) return <h2>error</h2>;
+
+  if (loading) return <h2>loading</h2>;
+
+  const deleteListingLoadingMessage = deleteLoading ? (
+    <h4>deleting...</h4>
+  ) : null;
+
+  const deleteListingErrorMessage = deleteError ? <h4>delete error</h4> : null;
+
   return (
     <>
       <h2>TinyHouse Listings</h2>
-      <button onClick={fetchListings}>Query Listing!</button>
-      <button onClick={deleteListings}>Deleting Listing!</button>
+      {listingsList}
+      {deleteListingLoadingMessage}
+      {deleteListingErrorMessage}
     </>
   );
 };
