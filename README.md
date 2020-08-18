@@ -10,11 +10,12 @@
 
 ```json
 {
- "scripts": {
-   "start": "nodemon src/index.ts"
- }
+  "scripts": {
+    "start": "nodemon src/index.ts"
+  }
 }
 ```
+
 This is it!
 [nodemon and ts-node](https://github.com/remy/nodemon/pull/1552/commits/1272dab17501c12bdf6fd6621741a4b8d3854e78)
 
@@ -38,9 +39,9 @@ tsc -p ./
 
 - intuitive: client specifies exactly what data it needs
 - performant: no useless data needs to be transferred
-- typed: every field in the schema is type-defined 
+- typed: every field in the schema is type-defined
 - self-documenting
-- single endpoint 
+- single endpoint
 
 #### Resolver
 
@@ -49,3 +50,5 @@ tsc -p ./
   - args - arguments provides to the field
   - context - value provided to every resolver
   - info - info about the execution state of the query
+
+> [Proxying API Requests in Development](https://create-react-app.dev/docs/proxying-api-requests-in-development/)
