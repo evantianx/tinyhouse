@@ -3,6 +3,7 @@ import { render } from "react-dom";
 import * as serviceWorker from "./serviceWorker";
 import { Listings } from "./sections/Listings";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import "./styles/index.css";
 
 const client = new ApolloClient({
   uri: "/api",
@@ -11,7 +12,7 @@ const client = new ApolloClient({
 
 render(
   <ApolloProvider client={client}>
-    <Listings />
+    <Listings title="TinyHouse Listings" />
   </ApolloProvider>,
   document.getElementById("root")
 );
