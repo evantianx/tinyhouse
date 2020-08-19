@@ -2,11 +2,17 @@ import React from "react";
 import { render } from "react-dom";
 import * as serviceWorker from "./serviceWorker";
 import { Listings } from "./sections/Listings";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+
+const client = new ApolloClient({
+  uri: "/api",
+  cache: new InMemoryCache(),
+});
 
 render(
-  <React.StrictMode>
+  <ApolloProvider client={client}>
     <Listings />
-  </React.StrictMode>,
+  </ApolloProvider>,
   document.getElementById("root")
 );
 
