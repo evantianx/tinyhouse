@@ -52,3 +52,28 @@ tsc -p ./
   - info - info about the execution state of the query
 
 > [Proxying API Requests in Development](https://create-react-app.dev/docs/proxying-api-requests-in-development/)
+
+### Routing
+
+#### Server-side routing
+
+- Pros
+
+  - only request the webpage that the user is viewing
+  - initial page will be faster
+  - improved SEO
+
+- Cons
+  - every URL change will result in a full-page refresh
+  - data that doesn't change might be requested over and over again
+
+#### Client-side routing
+
+- Pros
+
+  - navigate between routes is extremely fast
+  - no white screen flash when waiting for a page to load
+
+- Cons
+  - the whole web app needs to be loaded on the first request
+  - serch engine crawling is less optimized
