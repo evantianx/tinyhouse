@@ -19,7 +19,7 @@ export interface BookingsIndex {
 
 export interface Listing {
   _id: ObjectId;
-  totle: string;
+  title: string;
   description: string;
   image: string;
   host: string;
