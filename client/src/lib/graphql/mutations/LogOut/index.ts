@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const LOG_OUT = gql`
   mutation LogOut {
-    logIn {
+    logOut {
       id
       token
       avatar
