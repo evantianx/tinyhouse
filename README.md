@@ -81,4 +81,5 @@ tsc -p ./
 ### TODO
 
 - [ ] Use `passport.js` as Google OAuth 2
+    - another alternative method [grant](https://github.com/simov/grant)
 - [ ] Switch to `TypeORM` and `TypeGraphQL`
