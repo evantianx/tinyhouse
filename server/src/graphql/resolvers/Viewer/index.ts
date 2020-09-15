@@ -2,7 +2,7 @@ import crypto from "crypto";
 import { Response, Request } from "express";
 import { IResolvers } from "apollo-server-express";
 import { Google } from "../../../lib/api";
-import { Viewer, DataBase, User } from "../../../lib/types";
+import { Viewer, Database, User } from "../../../lib/types";
 import { LogInArgs } from "./types";
 
 const cookieOptions = {
@@ -15,7 +15,7 @@ const cookieOptions = {
 const logInViaGoogle = async (
   code: string,
   token: string,
-  db: DataBase,
+  db: Database,
   res: Response
 ): Promise<User | undefined> => {
   const { user } = await Google.logIn(code);
@@ -95,7 +95,7 @@ const logInViaGoogle = async (
 
 const logInViaCookie = async (
   token: string,
-  db: DataBase,
+  db: Database,
   req: Request,
   res: Response
 ): Promise<User | undefined> => {
@@ -134,7 +134,7 @@ export const viewerResolvers: IResolvers = {
     logIn: async (
       _root: undefined,
       { input }: LogInArgs,
-      { db, res, req }: { db: DataBase; res: Response; req: Request }
+      { db, res, req }: { db: Database; res: Response; req: Request }
     ): Promise<Viewer> => {
       try {
         const code = input ? input.code : null;

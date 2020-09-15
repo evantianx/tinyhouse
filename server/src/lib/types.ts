@@ -62,7 +62,7 @@ export interface Booking {
   checkOut: string;
 }
 
-export interface DataBase {
+export interface Database {
   listings: Collection<Listing>;
   users: Collection<User>;
   bookings: Collection<Booking>;

@@ -17,6 +17,7 @@ import {
   InMemoryCache,
   ApolloProvider,
   useMutation,
+  createHttpLink,
 } from "@apollo/client";
 import { Layout, Affix, Spin } from "antd";
 import "./styles/index.css";
@@ -27,6 +28,7 @@ import {
   LogInVariables,
 } from "./lib/graphql/mutations/LogIn/__generated__/LogIn";
 import { AppHeaderSkeleton, ErrorBanner } from "./lib/components";
+import { setContext } from "@apollo/client/link/context";
 
 const initialViewer: Viewer = {
   id: null,
@@ -36,8 +38,23 @@ const initialViewer: Viewer = {
   didRequest: false,
 };
 
-const client = new ApolloClient({
+const httpLink = createHttpLink({
   uri: "/api",
+});
+
+const authLink = setContext((_, { headers }) => {
+  const token = sessionStorage.getItem("token");
+
+  return {
+    headers: {
+      ...headers,
+      "X-CSRF-TOKEN": token ? token : "",
+    },
+  };
+});
+
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 
@@ -47,6 +64,12 @@ const App = () => {
     onCompleted: (data) => {
       if (data && data.logIn) {
         setViewer(data.logIn);
+      }
+
+      if (data.logIn.token) {
+        sessionStorage.setItem("token", data.logIn.token);
+      } else {
+        sessionStorage.removeItem("token");
       }
     },
   });
