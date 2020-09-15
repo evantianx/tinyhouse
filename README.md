@@ -77,3 +77,9 @@ tsc -p ./
 - Cons
   - the whole web app needs to be loaded on the first request
   - serch engine crawling is less optimized
+  
+### TODO
+
+- [ ] Use `passport.js` as Google OAuth 2
+    - another alternative method [grant](https://github.com/simov/grant)
+- [ ] Switch to `TypeORM` and `TypeGraphQL`
