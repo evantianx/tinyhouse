@@ -20,7 +20,7 @@ const mount = async (app: Application) => {
 
   app.listen(process.env.PORT);
 
-  console.log(`[app]: running on: http://localhost:${process.env.PORT}`);
+  console.log(`[app]: 🚀 running on: http://localhost:${process.env.PORT}`);
 };
 
 mount(express());
