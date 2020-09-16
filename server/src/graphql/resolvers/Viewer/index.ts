@@ -161,7 +161,7 @@ export const viewerResolvers: IResolvers = {
     },
     logOut: (
       _root: undefined,
-      _args: {},
+      _args: unknown,
       { res }: { res: Response }
     ): Viewer => {
       try {
