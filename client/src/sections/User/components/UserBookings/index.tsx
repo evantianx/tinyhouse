@@ -20,7 +20,6 @@ export const UserBookings = ({
 }: Props) => {
   const total = userBookings?.total;
   const result = userBookings?.result;
-  console.log(userBookings);
 
   const userBookingsList = userBookings ? (
     <List

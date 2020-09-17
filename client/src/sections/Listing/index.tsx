@@ -8,7 +8,7 @@ import {
   ListingVariables,
 } from "../../lib/graphql/queries/Listing/__generated__/Listing";
 import { PageSkeleton, ErrorBanner } from "../../lib/components";
-import { ListingDetails } from "./components";
+import { ListingBookings, ListingDetails } from "./components";
 
 interface MatchParams {
   id: string;
@@ -54,11 +54,21 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
     <ListingDetails listing={listing} />
   ) : null;
 
+  const listingBookinsElement = listingBookings ? (
+    <ListingBookings
+      limit={PAGE_LIMIT}
+      bookingsPage={bookingsPage}
+      listingBookings={listingBookings}
+      setBookingsPage={setBookingsPage}
+    />
+  ) : null;
+
   return (
     <Content className="listing">
       <Row gutter={24} justify="space-between">
         <Col xs={24} lg={14}>
           {listingDetailsElement}
+          {listingBookinsElement}
         </Col>
       </Row>
     </Content>
