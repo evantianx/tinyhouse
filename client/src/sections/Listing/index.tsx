@@ -1,13 +1,18 @@
 import { useQuery } from "@apollo/client";
 import React, { useState } from "react";
 import { Col, Row, Layout } from "antd";
+import { Moment } from "moment";
 import { RouteComponentProps } from "react-router-dom";
 import { LISTING } from "../../lib/graphql/queries";
 import {
   Listing as ListingData,
   ListingVariables,
 } from "../../lib/graphql/queries/Listing/__generated__/Listing";
-import { PageSkeleton, ErrorBanner } from "../../lib/components";
+import {
+  PageSkeleton,
+  ErrorBanner,
+  ListingCreatingBooking,
+} from "../../lib/components";
 import { ListingBookings, ListingDetails } from "./components";
 
 interface MatchParams {
@@ -19,6 +24,8 @@ const { Content } = Layout;
 const PAGE_LIMIT = 3;
 export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
   const [bookingsPage, setBookingsPage] = useState(1);
+  const [checkInDate, setCheckInDate] = useState<Moment | null>(null);
+  const [checkOutDate, setCheckOutDate] = useState<Moment | null>(null);
   const { loading, error, data } = useQuery<ListingData, ListingVariables>(
     LISTING,
     {
@@ -63,12 +70,25 @@ export const Listing = ({ match }: RouteComponentProps<MatchParams>) => {
     />
   ) : null;
 
+  const listingCreateBooking = listing ? (
+    <ListingCreatingBooking
+      price={listing.price}
+      checkInDate={checkInDate}
+      checkOutDate={checkOutDate}
+      setCheckInDate={setCheckInDate}
+      setCheckOutDate={setCheckOutDate}
+    />
+  ) : null;
+
   return (
     <Content className="listing">
       <Row gutter={24} justify="space-between">
         <Col xs={24} lg={14}>
           {listingDetailsElement}
           {listingBookinsElement}
+        </Col>
+        <Col xs={24} lg={10}>
+          {listingCreateBooking}
         </Col>
       </Row>
     </Content>
