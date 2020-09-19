@@ -25,6 +25,7 @@ export const typeDefs = gql`
   }
 
   type Listings {
+    region: String
     total: Int!
     result: [Listing!]!
   }
@@ -36,6 +37,8 @@ export const typeDefs = gql`
     image: String!
     host: User!
     type: ListingType!
+    country: String!
+    admin: String!
     address: String!
     city: String!
     bookings(limit: Int!, page: Int!): Bookings
@@ -70,7 +73,12 @@ export const typeDefs = gql`
     authUrl: String!
     user(id: ID!): User!
     listing(id: ID!): Listing!
-    listings(filter: ListingFilter!, limit: Int!, page: Int!): Listings!
+    listings(
+      location: String
+      filter: ListingFilter!
+      limit: Int!
+      page: Int!
+    ): Listings!
   }
 
   type Mutation {
