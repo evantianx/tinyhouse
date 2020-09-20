@@ -65,6 +65,11 @@ export const listingResolvers: IResolvers = {
           // data.region = `${cityText}${adminText}${country}`
           query.country = "Canada";
           data.region = "Toronto, Ontario, Canada";
+
+          if (location.toLowerCase() === "us") {
+            data.region = "United States";
+            return data;
+          }
         }
 
         let cursor = await db.listings.find(query);
