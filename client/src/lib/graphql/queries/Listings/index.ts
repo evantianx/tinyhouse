@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 export const LISTINGS = gql`
   query Listings(
     $location: String
-    $filter: ListingFilter!
+    $filter: ListingsFilter!
     $limit: Int!
     $page: Int!
   ) {

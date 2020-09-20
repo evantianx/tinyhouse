@@ -13,7 +13,7 @@ import {
   ListingsVariables,
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 import { LISTINGS } from "../../lib/graphql/queries";
-import { ListingFilter } from "../../lib/graphql/globalTypes";
+import { ListingsFilter } from "../../lib/graphql/globalTypes";
 
 const { Content } = Layout;
 const { Paragraph, Title } = Typography;
@@ -24,7 +24,7 @@ const PAGE_NUMBER = 1;
 export const Home = ({ history }: RouteComponentProps) => {
   const { loading, data } = useQuery<Listings, ListingsVariables>(LISTINGS, {
     variables: {
-      filter: ListingFilter.PRICE_HIGH_TO_LOW,
+      filter: ListingsFilter.PRICE_HIGH_TO_LOW,
       limit: PAGE_LIMIT,
       page: PAGE_NUMBER,
     },

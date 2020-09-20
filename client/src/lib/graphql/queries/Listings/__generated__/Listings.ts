@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ListingFilter } from "./../../../globalTypes";
+import { ListingsFilter } from "./../../../globalTypes";
 
 // ====================================================
 // GraphQL query operation: Listings
@@ -31,7 +31,7 @@ export interface Listings {
 
 export interface ListingsVariables {
   location?: string | null;
-  filter: ListingFilter;
+  filter: ListingsFilter;
   limit: number;
   page: number;
 }

@@ -6,7 +6,7 @@ import {
   ListingsVariables,
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 import { LISTINGS } from "../../lib/graphql/queries";
-import { ListingFilter } from "../../lib/graphql/globalTypes";
+import { ListingsFilter } from "../../lib/graphql/globalTypes";
 import { ListingCard } from "../../lib/components";
 import { Link, RouteComponentProps } from "react-router-dom";
 import { ListingsFilterSection } from "./components";
@@ -20,7 +20,7 @@ interface MatchParams {
 }
 
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
-  const [filter, setFilter] = useState(ListingFilter.PRICE_LOW_TO_HIGH);
+  const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
   const { data, loading } = useQuery<ListingsData, ListingsVariables>(
     LISTINGS,
     {
