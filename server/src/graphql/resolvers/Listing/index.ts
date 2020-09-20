@@ -8,7 +8,7 @@ import {
   ListingArgs,
   ListingBookingsArgs,
   ListingBookingsData,
-  ListingFilter,
+  ListingsFilter,
   ListingsArgs,
   ListingsData,
   ListingsQuery,
@@ -76,7 +76,7 @@ export const listingResolvers: IResolvers = {
 
         if (filter) {
           cursor = cursor.sort({
-            price: filter === ListingFilter.PRICE_LOW_TO_HIGH ? 1 : -1,
+            price: filter === ListingsFilter.PRICE_LOW_TO_HIGH ? 1 : -1,
           });
         }
         // skip what we already fetched
