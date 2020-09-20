@@ -7,9 +7,13 @@ import {
 } from "../../lib/graphql/queries/Listings/__generated__/Listings";
 import { LISTINGS } from "../../lib/graphql/queries";
 import { ListingsFilter } from "../../lib/graphql/globalTypes";
-import { ListingCard } from "../../lib/components";
+import { ErrorBanner, ListingCard } from "../../lib/components";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { ListingPagination, ListingsFilterSection } from "./components";
+import {
+  ListingPagination,
+  ListingsFilterSection,
+  ListingsSkeleton,
+} from "./components";
 
 const { Content } = Layout;
 const { Title, Paragraph, Text } = Typography;
@@ -22,7 +26,7 @@ interface MatchParams {
 export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
   const [filter, setFilter] = useState(ListingsFilter.PRICE_LOW_TO_HIGH);
   const [page, setPage] = useState(1);
-  const { data, loading } = useQuery<ListingsData, ListingsVariables>(
+  const { data, loading, error } = useQuery<ListingsData, ListingsVariables>(
     LISTINGS,
     {
       variables: {
@@ -33,6 +37,16 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
       },
     }
   );
+  if (loading || error) {
+    return (
+      <Content className="listings">
+        {error && (
+          <ErrorBanner description="We either couldn't find anything matching your search or have encountered an error. If you're searching for a unique location, try searching again with more common keywords" />
+        )}
+        <ListingsSkeleton />
+      </Content>
+    );
+  }
 
   const listings = data?.listings;
   const listingsRegion = listings?.region;
@@ -67,18 +81,16 @@ export const Listings = ({ match }: RouteComponentProps<MatchParams>) => {
         />
       </>
     ) : (
-      !loading && (
-        <div>
+      <div>
+        <Paragraph>
+          It appears that no listings have been created for{""}
+          <Text mark>{listingsRegion}</Text>
           <Paragraph>
-            It appears that no listings have been created for{""}
-            <Text mark>{listingsRegion}</Text>
-            <Paragraph>
-              Be the first person to create a{" "}
-              <Link to="/host">listing in this area</Link>
-            </Paragraph>
+            Be the first person to create a{" "}
+            <Link to="/host">listing in this area</Link>
           </Paragraph>
-        </div>
-      )
+        </Paragraph>
+      </div>
     );
 
   const listingsRegionElement = listingsRegion ? (
