@@ -32,7 +32,7 @@ export const Home = ({ history }: RouteComponentProps) => {
 
   const onSearch = (value: string) => {
     value.trim()
-      ? history.push(`listings/${value.trim()}`)
+      ? history.push(`/listings/${value.trim()}`)
       : displayErrorMessage("Please enter a valid search!");
   };
 
