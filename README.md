@@ -77,9 +77,25 @@ tsc -p ./
 - Cons
   - the whole web app needs to be loaded on the first request
   - serch engine crawling is less optimized
-  
+
 ### TODO
 
 - [ ] Use `passport.js` as Google OAuth 2
-    - another alternative method [grant](https://github.com/simov/grant)
+  - another alternative method [grant](https://github.com/simov/grant)
 - [ ] Switch to `TypeORM` and `TypeGraphQL`
+
+### MongoDB
+
+#### Indexes
+
+Without indexes, MongoDB must perform a clollection scan(i.e. scan for every document in a collection) to select the documents that match a query statement.
+
+When we define an index for a certain field, we tell the database to create a different data structure to store the values of that field for every document in the collection.
+
+MongoDB indexes use a B-tree data structure.
+
+- default `_id` index
+
+  - MongoDB automatically creates a unique index on the `_id` field during the creation of a collection.
+  - The `_id` index is unique.
+  - MongoDB also offers many other different index types such as `geospatial`, `text`, etc.
