@@ -86,10 +86,21 @@ export const typeDefs = gql`
     ): Listings!
   }
 
+  input HostListingInput {
+    title: String!
+    description: String!
+    image: String!
+    type: String!
+    address: String!
+    price: Int!
+    numOfGuests: Int!
+  }
+
   type Mutation {
     logIn(input: LogInInput): Viewer!
     logOut: Viewer!
     connectStripe(input: ConnectStripeInput!): Viewer!
     disconnectStripe: Viewer!
+    hostListing(input: HostListingInput!): Listing!
   }
 `;
