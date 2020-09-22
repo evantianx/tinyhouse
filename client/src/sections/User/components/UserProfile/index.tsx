@@ -1,17 +1,54 @@
 import React from "react";
 import { Avatar, Card, Divider, Typography, Tag, Button } from "antd";
 import { User as UserData } from "../../../../lib/graphql/queries/User/__generated__/User";
-import { formatListingPrice } from "../../../../lib/utils";
+import {
+  displayErrorMessage,
+  displaySuccessNotification,
+  formatListingPrice,
+} from "../../../../lib/utils";
+import { useMutation } from "@apollo/client";
+import { DisconnectStripe as DisconnectStripeData } from "../../../../lib/graphql/mutations/DisconnectStripe/__generated__/DisconnectStripe";
+import { DISCONNECT_STRIPE } from "../../../../lib/graphql/mutations";
+import { Viewer } from "../../../../lib/types";
 
 interface Props {
   user: UserData["user"];
+  viewer: Viewer;
+  setViewer: (viewer: Viewer) => void;
   viewerIsUser: boolean;
+  handleUserRefetch: () => void;
 }
 
 const { Paragraph, Text, Title } = Typography;
 const stripeAuthUrl = `https://connect.stripe.com/oauth/authorize?response_type=code&client_id=${process.env.REACT_APP_STRIPE_CLIENT_ID}&scope=read_write`;
 
-export const UserProfile = ({ user, viewerIsUser }: Props) => {
+export const UserProfile = ({
+  user,
+  viewerIsUser,
+  setViewer,
+  viewer,
+  handleUserRefetch,
+}: Props) => {
+  const [disconnectStripe, { loading }] = useMutation<DisconnectStripeData>(
+    DISCONNECT_STRIPE,
+    {
+      onCompleted: (data) => {
+        setViewer({ ...viewer, hasWallet: data.disconnectStripe.hasWallet });
+        if (data && data.disconnectStripe) {
+          displaySuccessNotification(
+            "You've successfully disconnected from Stripe!",
+            "You'll have to reconnect with Stripe to continue to create listings."
+          );
+        }
+        handleUserRefetch();
+      },
+      onError: () => {
+        displayErrorMessage(
+          "Sorry! We weren't able to disconnect you from Stripe. Please try again later!"
+        );
+      },
+    }
+  );
   const redirectToStripe = () => (window.location.href = stripeAuthUrl);
   const additionalDetails = user.hasWallet ? (
     <>
@@ -24,7 +61,12 @@ export const UserProfile = ({ user, viewerIsUser }: Props) => {
           {user.income ? formatListingPrice(user.income) : "$0"}
         </Text>
       </Paragraph>
-      <Button type="primary" className="user-profile__detailes-cta">
+      <Button
+        type="primary"
+        className="user-profile__detailes-cta"
+        loading={loading}
+        onClick={() => disconnectStripe()}
+      >
         Disconnect Stripe
       </Button>
       <Paragraph type="secondary">

@@ -13,6 +13,7 @@ import { ErrorBanner, PageSkeleton } from "../../lib/components";
 
 interface Props {
   viewer: Viewer;
+  setViewer: (viewer: Viewer) => void;
 }
 
 interface MatchParams {
@@ -24,18 +25,24 @@ const PAGE_LIMIT = 4;
 
 export const User = ({
   viewer,
+  setViewer,
   match,
 }: Props & RouteComponentProps<MatchParams>) => {
   const [listingsPage, setListingsState] = useState(1);
   const [bookingsPage, setBookingsState] = useState(1);
-  const { data, loading, error } = useQuery<UserData, UserVariables>(USER, {
-    variables: {
-      id: match.params.id,
-      bookingsPage,
-      listingsPage,
-      limit: PAGE_LIMIT,
-    },
-  });
+  const { data, loading, error, refetch } = useQuery<UserData, UserVariables>(
+    USER,
+    {
+      variables: {
+        id: match.params.id,
+        bookingsPage,
+        listingsPage,
+        limit: PAGE_LIMIT,
+      },
+    }
+  );
+
+  const handleUserRefetch = async () => await refetch();
 
   const stripeError = new URL(window.location.href).searchParams.get(
     "stripe_error"
@@ -65,10 +72,15 @@ export const User = ({
   const viewerIsUser = viewer.id === match.params.id;
   const userListings = user?.listings;
   const userBookings = user?.bookings;
-  console.log(user);
 
   const userProfileElement = user ? (
-    <UserProfile user={user} viewerIsUser={viewerIsUser} />
+    <UserProfile
+      user={user}
+      viewerIsUser={viewerIsUser}
+      viewer={viewer}
+      setViewer={setViewer}
+      handleUserRefetch={handleUserRefetch}
+    />
   ) : null;
 
   const userListingsElement = userListings ? (

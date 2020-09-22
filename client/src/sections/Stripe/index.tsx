@@ -29,7 +29,7 @@ export const Stripe = ({
       setViewer({ ...viewer, hasWallet: data.connectStripe.hasWallet });
       displaySuccessNotification(
         "You've successfully connected your Stripe account!",
-        "You can now befin to create listings in the Host page."
+        "You can now begin to create listings in the Host page."
       );
     },
   });
