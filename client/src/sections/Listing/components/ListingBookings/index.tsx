@@ -72,7 +72,7 @@ export const ListingBookings = ({
       <Divider />
       <div className="listing-bookings__section">
         <Title level={4} className="user-bookings__title">
-          Listings
+          Bookings
         </Title>
       </div>
       {listingBookingsList}
