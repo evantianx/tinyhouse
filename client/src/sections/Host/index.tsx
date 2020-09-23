@@ -43,7 +43,7 @@ interface UserInput {
   address: string;
   city?: string;
   state?: string;
-  postalCode?: string;
+  zip?: string;
   type: string;
   title: string;
   description: string;
@@ -98,7 +98,7 @@ export const Host = ({ viewer }: Props) => {
 
     delete input.city;
     delete input.state;
-    delete input.postalCode;
+    delete input.zip;
 
     hostListing({
       variables: { input },
