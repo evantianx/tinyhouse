@@ -65,7 +65,7 @@ export const UserBookings = ({
   const userBookingsElement = userBookingsList ? (
     <div className="user-bookings">
       <Title level={4} className="user-bookings__title">
-        Listings
+        Bookings
       </Title>
       <Paragraph className="user-bookings__description">
         This section highlights the bookings you've made, and the check-in /
