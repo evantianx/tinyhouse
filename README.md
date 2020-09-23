@@ -99,3 +99,8 @@ MongoDB indexes use a B-tree data structure.
   - MongoDB automatically creates a unique index on the `_id` field during the creation of a collection.
   - The `_id` index is unique.
   - MongoDB also offers many other different index types such as `geospatial`, `text`, etc.
+
+### Cloud-Based Image Management Service
+
+- we don't have to store images directly in our database anymore
+- can make our app more responsive since we don't have to query large amounts of image data
