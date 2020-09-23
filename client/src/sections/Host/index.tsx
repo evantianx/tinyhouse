@@ -10,7 +10,7 @@ import {
   Button,
 } from "antd";
 import { Viewer } from "../../lib/types";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { ListingType } from "../../lib/graphql/globalTypes";
 import {
   BankOutlined,
@@ -18,8 +18,18 @@ import {
   LoadingOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { displayErrorMessage, iconColor } from "../../lib/utils";
+import {
+  displayErrorMessage,
+  displaySuccessNotification,
+  iconColor,
+} from "../../lib/utils";
 import { UploadChangeParam } from "antd/lib/upload";
+import { useMutation } from "@apollo/client";
+import {
+  HostListing as HostListingData,
+  HostListingVariables,
+} from "../../lib/graphql/mutations/HostListing/__generated__/HostListing";
+import { HOST_LISTING } from "../../lib/graphql/mutations";
 
 const { Content } = Layout;
 const { Text, Title } = Typography;
@@ -29,9 +39,35 @@ interface Props {
   viewer: Viewer;
 }
 
+interface UserInput {
+  address: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  type: string;
+  title: string;
+  description: string;
+  price: number;
+  numOfGuests: number;
+  image: File;
+}
+
 export const Host = ({ viewer }: Props) => {
   const [imageLoading, setImageLoading] = useState(false);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [hostListing, { loading, data }] = useMutation<
+    HostListingData,
+    HostListingVariables
+  >(HOST_LISTING, {
+    onError: () => {
+      displayErrorMessage(
+        "Sorry! We weren't able to create your listing. Please try again later."
+      );
+    },
+    onCompleted: () => {
+      displaySuccessNotification("You've successfully created your listing!");
+    },
+  });
   const handleImageUpload = (info: UploadChangeParam) => {
     const { file } = info;
 
@@ -46,6 +82,27 @@ export const Host = ({ viewer }: Props) => {
         setImageLoading(false);
       });
     }
+  };
+
+  const handleHostListing = (values: any) => {
+    const { address, city, state, postalCode } = values;
+
+    const fullAddress = `${address}, ${city}, ${state}, ${postalCode}`;
+
+    const input = {
+      ...values,
+      address: fullAddress,
+      image: imageBase64,
+      price: values.price * 100,
+    };
+
+    delete input.city;
+    delete input.state;
+    delete input.postalCode;
+
+    hostListing({
+      variables: { input },
+    });
   };
 
   if (!viewer.id || !viewer.hasWallet) {
@@ -67,9 +124,26 @@ export const Host = ({ viewer }: Props) => {
     );
   }
 
+  if (loading) {
+    return (
+      <Content className="host-content">
+        <div className="host__form-header">
+          <Title level={3} className="host__form-title">
+            Please wait!
+          </Title>
+          <Text type="secondary">We're creating your listing now!</Text>
+        </div>
+      </Content>
+    );
+  }
+
+  if (data && data.hostListing) {
+    return <Redirect to={`/listing/${data.hostListing.id}`} />;
+  }
+
   return (
     <Content className="host-content">
-      <Form layout="vertical">
+      <Form layout="vertical" onFinish={handleHostListing}>
         <div className="host__form-header">
           <Title level={3} className="host__form-title">
             Hi! Let's get started listing your place.
@@ -80,7 +154,11 @@ export const Host = ({ viewer }: Props) => {
           </Text>
         </div>
 
-        <Item label="Home Type">
+        <Item
+          label="Home Type"
+          name="type"
+          rules={[{ required: true, message: "Please select a home type!" }]}
+        >
           <Radio.Group>
             <Radio.Button value={ListingType.APARTMENT}>
               <BankOutlined style={{ color: iconColor, paddingRight: "4px" }} />
@@ -93,14 +171,44 @@ export const Host = ({ viewer }: Props) => {
           </Radio.Group>
         </Item>
 
-        <Item label="Title" extra="Max character count of 45">
+        <Item
+          label="Max # of Guests"
+          name="numOfGuests"
+          rules={[
+            { required: true, message: "Please enter a max number of guests!" },
+          ]}
+        >
+          <InputNumber min={1} placeholder="4" />
+        </Item>
+
+        <Item
+          label="Title"
+          extra="Max character count of 45"
+          name="title"
+          rules={[
+            {
+              required: true,
+              message: "please enter a title of your listing!",
+            },
+          ]}
+        >
           <Input
             maxLength={45}
             placeholder="The iconic and luxurious Bel-Ail mansion"
           />
         </Item>
 
-        <Item label="Description" extra="Max character count of 400">
+        <Item
+          label="Description"
+          extra="Max character count of 400"
+          name="description"
+          rules={[
+            {
+              required: true,
+              message: "please enter a description of your listing!",
+            },
+          ]}
+        >
           <Input.TextArea
             maxLength={400}
             rows={3}
@@ -108,29 +216,82 @@ export const Host = ({ viewer }: Props) => {
           />
         </Item>
 
-        <Item label="Address">
+        <Item
+          label="Address"
+          name="address"
+          rules={[
+            {
+              required: true,
+              message: "please enter a address of your listing!",
+            },
+          ]}
+        >
           <Input placeholder="251 North Bristol Avenue" />
         </Item>
 
-        <Item label="City/Town">
+        <Item
+          label="City/Town"
+          name="city"
+          rules={[
+            {
+              required: true,
+              message: "please enter a city(or region) of your listing!",
+            },
+          ]}
+        >
           <Input placeholder="Los Angeles" />
         </Item>
 
-        <Item label="State/Province">
+        <Item
+          label="State/Province"
+          name="state"
+          rules={[
+            {
+              required: true,
+              message: "please enter a state(or province) of your listing!",
+            },
+          ]}
+        >
           <Input placeholder="California" />
         </Item>
 
-        <Item label="Zip/Postal Code">
+        <Item
+          label="Zip/Postal Code"
+          name="zip"
+          rules={[
+            {
+              required: true,
+              message: "please enter a zip(or postal) code of your listing!",
+            },
+          ]}
+        >
           <Input placeholder="Please enter a zip code for your listing!" />
         </Item>
 
-        <Item label="Price" extra="All prices in $USD/day">
+        <Item
+          label="Price"
+          extra="All prices in $USD/day"
+          name="price"
+          rules={[
+            {
+              required: true,
+              message: "please enter a price of your listing!",
+            },
+          ]}
+        >
           <InputNumber min={0} placeholder="120" />
         </Item>
 
         <Item
           label="Images"
           extra="Images have to be under 1MB in size and of type JPG or PNG"
+          name="image"
+          rules={[
+            {
+              required: true,
+              message: "please enter a image of your listing!",
+            },
+          ]}
         >
           <div className="host__form-image-upload">
             <Upload
@@ -154,7 +315,9 @@ export const Host = ({ viewer }: Props) => {
         </Item>
 
         <Item>
-          <Button type="primary">Submit</Button>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
         </Item>
       </Form>
     </Content>
