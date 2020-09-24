@@ -1,9 +1,11 @@
 import { KeyOutlined } from "@ant-design/icons";
 import { Modal, Button, Divider, Typography } from "antd";
+import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import moment from "moment";
 import { Moment } from "moment";
 import React from "react";
 import { formatListingPrice } from "../../../../lib/utils";
+import { StripeCardElement } from "@stripe/stripe-js";
 
 interface Props {
   price: number;
@@ -24,6 +26,18 @@ export const ListingCreateBookingModal = ({
 }: Props) => {
   const daysBooked = checkOutDate.diff(checkInDate, "days") + 2;
   const listingPrice = price * daysBooked;
+  const stripe = useStripe();
+  const elements = useElements();
+  const handleCreateBooking = async () => {
+    if (!stripe || !elements) return;
+    const cardElement = elements.getElement(CardElement);
+
+    let { token: stripeToken } = await stripe.createToken(
+      cardElement as StripeCardElement
+    );
+
+    console.log(stripeToken);
+  };
 
   return (
     <Modal
@@ -66,10 +80,15 @@ export const ListingCreateBookingModal = ({
         <Divider />
 
         <div className="listing-booking-modal__stripe-card-section">
+          <CardElement
+            options={{ hidePostalCode: true }}
+            className="listing-booking-modal__stripe-card"
+          />
           <Button
             size="large"
             type="primary"
             className="listing-booking-modal__cta"
+            onClick={handleCreateBooking}
           >
             Book
           </Button>

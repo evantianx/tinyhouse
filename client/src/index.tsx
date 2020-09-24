@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { render } from "react-dom";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import * as serviceWorker from "./serviceWorker";
 import {
   Home,
@@ -59,6 +61,10 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const stripePromise = loadStripe(
+  `${process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY}`
+);
+
 const App = () => {
   const [viewer, setViewer] = useState<Viewer>(initialViewer);
   const [logIn, { error }] = useMutation<LogInData, LogInVariables>(LOG_IN, {
@@ -112,7 +118,11 @@ const App = () => {
           <Route
             exact
             path="/listing/:id"
-            render={(props) => <Listing {...props} viewer={viewer} />}
+            render={(props) => (
+              <Elements stripe={stripePromise}>
+                <Listing {...props} viewer={viewer} />
+              </Elements>
+            )}
           />
           <Route exact path="/listings/:location?" component={Listings} />
           <Route
