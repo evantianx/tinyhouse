@@ -93,7 +93,7 @@ export const bookingResolvers: IResolvers = {
         // get total price to charge
         const totalPrice =
           listing.price *
-          ((checkOutDate.getTime() - checkOutDate.getTime()) / 86400000 + 1);
+          ((checkOutDate.getTime() - checkInDate.getTime()) / 86400000 + 1);
 
         // get user document of host of listing
         const host = await db.users.findOne({
