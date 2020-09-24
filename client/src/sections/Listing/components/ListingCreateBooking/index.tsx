@@ -34,7 +34,7 @@ export const ListingCreatingBooking = ({
   const dateIsBooked = (date: Moment): boolean => {
     const year = moment(date).year();
     const month = moment(date).month();
-    const day = moment(date).day();
+    const day = moment(date).date();
 
     if (bookingsIndexJSON[year] && bookingsIndexJSON[year][month]) {
       return bookingsIndexJSON[year][month][day];
@@ -42,7 +42,7 @@ export const ListingCreatingBooking = ({
 
     return false;
   };
-  const isDateValid = ({ isCheckIn = true }) => (currentDate?: Moment) => {
+  const isDateValid = ({ isCheckIn = true }) => (currentDate: Moment) => {
     const refDate = isCheckIn
       ? moment().endOf("day")
       : checkInDate?.endOf("day");

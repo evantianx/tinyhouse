@@ -42,7 +42,9 @@ export const User = ({
     }
   );
 
-  const handleUserRefetch = async () => await refetch();
+  const handleUserRefetch = async () => {
+    await refetch();
+  };
 
   const stripeError = new URL(window.location.href).searchParams.get(
     "stripe_error"

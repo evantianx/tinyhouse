@@ -16,7 +16,7 @@ interface Props {
   viewer: Viewer;
   setViewer: (viewer: Viewer) => void;
   viewerIsUser: boolean;
-  handleUserRefetch: () => void;
+  handleUserRefetch: () => Promise<void>;
 }
 
 const { Paragraph, Text, Title } = Typography;
