@@ -1,5 +1,11 @@
 import { IResolvers } from "apollo-server-express";
-import { Booking, BookingsIndex, Database, Listing } from "../../../lib/types";
+import {
+  Booking,
+  BookingsIndex,
+  Database,
+  Listing,
+  User,
+} from "../../../lib/types";
 import { authorize } from "../../../lib/utils";
 import { CreateBookingArgs } from "./types";
 import { Request } from "express";
@@ -162,6 +168,13 @@ export const bookingResolvers: IResolvers = {
       { db }: { db: Database }
     ): Promise<Listing | null> => {
       return db.listings.findOne({ _id: booking.listing });
+    },
+    tenant: (
+      booking: Booking,
+      _args: unknown,
+      { db }: { db: Database }
+    ): Promise<User | null> => {
+      return db.users.findOne({ _id: booking.tenant });
     },
   },
 };
