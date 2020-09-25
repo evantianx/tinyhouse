@@ -76,25 +76,25 @@ export const listingResolvers: IResolvers = {
         };
 
         if (location) {
-          // const { country, admin, city } = await Google.geocode(location);
+          const { country, admin, city } = await Google.geocode(location);
 
-          // if (city) query.city = city;
-          // if (admin) query.admin = admin;
-          // if (country) {
-          //   query.country = country;
-          // } else {
-          //   throw new Error("no country found");
-          // }
-          // const cityText = city ? `${city},` : '';
-          // const adminText = admin ? `${admin}` : ''
-          // data.region = `${cityText}${adminText}${country}`
-          query.country = "Canada";
-          data.region = "Toronto, Ontario, Canada";
-
-          if (location.toLowerCase() === "us") {
-            data.region = "United States";
-            return data;
+          if (city) query.city = city;
+          if (admin) query.admin = admin;
+          if (country) {
+            query.country = country;
+          } else {
+            throw new Error("no country found");
           }
+          const cityText = city ? `${city},` : "";
+          const adminText = admin ? `${admin}` : "";
+          data.region = `${cityText}${adminText}${country}`;
+          // query.country = "Canada";
+          // data.region = "Toronto, Ontario, Canada";
+
+          // if (location.toLowerCase() === "us") {
+          //   data.region = "United States";
+          //   return data;
+          // }
         }
 
         let cursor = await db.listings.find(query);
@@ -131,15 +131,15 @@ export const listingResolvers: IResolvers = {
       }
 
       // For some reason this code below doesn't work :(
-      // const { country, admin, city } = await Google.geocode(input.address);
-      // if (!country || !admin || !city) {
-      //   throw new Error("invalid address input");
-      // }
-      const { country, admin, city } = {
-        country: "Canada",
-        admin: "Ontario",
-        city: "Toronto",
-      };
+      const { country, admin, city } = await Google.geocode(input.address);
+      if (!country || !admin || !city) {
+        throw new Error("invalid address input");
+      }
+      // const { country, admin, city } = {
+      //   country: "Canada",
+      //   admin: "Ontario",
+      //   city: "Toronto",
+      // };
 
       const imageUrl = await Cloudinary.upload(input.image);
 
